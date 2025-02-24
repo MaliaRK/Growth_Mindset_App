@@ -343,7 +343,7 @@ if st.session_state.show_quiz and st.session_state.selected_topic:
         selected = st.radio(
             f"Select your answer for Question {i+1}",
             q["options"],
-            index=q["options"].index(st.session_state.user_answers[f"q_{i}"]) if st.session_state.user_answers[f"q_{i}"] else None,
+            index=q["options"].index(st.session_state.user_answers[f"q_{i}"]) if st.session_state.user_answers[f"q_{i}"] in q["options"] else None,
             key=f"q_{i}",
             on_change=update_answer,
             args=(i,)
@@ -354,8 +354,12 @@ if st.session_state.show_quiz and st.session_state.selected_topic:
     if st.button("Submit Quiz"):
         score = sum(1 for i, q in enumerate(quiz) if st.session_state.user_answers[f"q_{i}"] == q["answer"])
         total_question = len(quiz)
+        percentage = (score / total_question * 100)
 
         st.write(f"### Your Score: {score}/{total_question}")
+
+        if percentage >= 70:
+            st.balloons()
 
         # Show feedback
         for i, q in enumerate(quiz):
